@@ -40,12 +40,21 @@ class HikvisionCameraController extends Controller
                 continue;
             }
 
-            // Escaneo veloz por socket local (1 segundo máx)
-            $socket = @fsockopen($ip, $port, $errno, $errstr, 1.0);
+            // Escaneo veloz por socket local (solo en entorno local)
+            // En producción (Fly.io) mostramos todas las cámaras como activas ya que no tiene acceso a la red local
+            $estaActiva = false;
+            if (app()->environment('local')) {
+                $socket = @fsockopen($ip, $port, $errno, $errstr, 1.0);
+                $estaActiva = (bool)$socket;
+                if ($socket) {
+                    fclose($socket);
+                }
+            } else {
+                // En producción (Fly.io), mostramos todas las cámaras como activas
+                $estaActiva = true;
+            }
 
-            if ($socket) {
-                fclose($socket);
-                
+            if ($estaActiva) {
                 $activeCameras[] = [
                     'nombre' => $alias,
                     'ip' => $ip,
