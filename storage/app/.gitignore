@@ -3,3 +3,4 @@
 !public/
 !.gitignore
 !cameras.csv
+cameras-status.json
