@@ -1,0 +1,19 @@
+#syntax=docker/dockerfile:1
+
+FROM laravelphp/vapor:php83
+
+COPY . /var/www/html
+
+RUN mkdir -p /tmp/storage/framework/views \
+    && mkdir -p /tmp/storage/framework/sessions \
+    && mkdir -p /tmp/storage/framework/cache \
+    && chmod -R 777 /tmp/storage
+
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+ENV LOG_CHANNEL=stderr
+ENV DB_CONNECTION=sqlite
+ENV DB_DATABASE=/tmp/database.sqlite
+ENV SESSION_DRIVER=file
+ENV CACHE_DRIVER=file
+ENV VIEW_COMPILED_PATH=/tmp/storage/framework/views

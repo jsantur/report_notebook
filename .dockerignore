@@ -1,0 +1,62 @@
+# excludes from the docker image/build
+
+# 1. Environment and sensitive files
+*.env
+*.env.local
+*.env.*.local
+*.env.*.example
+
+# 2. Laravel-specific temporary/cache files
+bootstrap/cache/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+storage/app/backups/*
+storage/app/public/*
+
+# 3. Dependencies
+vendor
+node_modules
+
+# 4. Version control
+.git
+.gitignore
+.gitattributes
+.github
+
+# 5. IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 6. Project-specific temporary/test files
+scratch
+test*.php
+check_*.php
+reset_admin.php
+fix_placeholder.php
+search_*.php
+serve.bat
+start_server.bat
+
+# 7. Docker and deployment config (keep fly.toml out of image)
+fly.toml
+Dockerfile.old
+.dockerignore
+
+# 8. Documentation (optional but can exclude to save space)
+PROYECTO_DESCRIPCION.md
+CHANGELOG.md
+skills_JSANTUR.md
+
+# 9. Database files (critical: never include local DB in deploy)
+database/database.sqlite
+storage/database/database.sqlite
+*.sqlite
+*.db
