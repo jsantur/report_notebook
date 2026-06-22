@@ -10,20 +10,25 @@ Usamos un túnel Ngrok desde tu máquina local para exponer el endpoint de escan
 
 ### 1. En tu máquina LOCAL (que tiene acceso a las cámaras):
 1. Asegúrate de tener el archivo `storage/app/cameras.csv` con la lista de cámaras.
-2. Inicia el servidor Laravel local en el puerto 8000:
-   ```bash
-   php artisan serve
-   ```
-3. Configura tu authtoken de Ngrok (solo una vez):
+2. Configura tu authtoken de Ngrok (solo una vez):
    ```bash
    ngrok config add-authtoken 3FSQXx07eQiZtV1Hajnib7FYXiR_6qeVuDzfdEiJpxGUj2LnQ
    ```
-4. Inicia el túnel Ngrok con tu URL personalizada:
-   ```bash
-   ngrok http --url=goal-amply-skinhead.ngrok-free.dev 8000
-   ```
 
-### 2. En Fly.io (producción):
+### 2. Iniciar los servicios automáticamente (segundo plano):
+He creado dos scripts para ti:
+- `iniciar_servicios.vbs`: Ejecuta los comandos en segundo plano (sin ventanas visibles)
+- `iniciar_servicios.bat`: Para ejecutarlo manualmente si lo necesitas
+
+#### Para ejecutar manualmente:
+Doble clic en `iniciar_servicios.bat`
+
+#### Para que inicie automáticamente con Windows:
+1. Presiona `Windows + R`
+2. Escribe: `shell:startup` y presiona Enter
+3. Crea un acceso directo a `iniciar_servicios.vbs` en esa carpeta
+
+### 3. En Fly.io (producción):
 1. Establece la variable de entorno `NGROK_URL` con tu URL personalizada:
    ```bash
    fly secrets set NGROK_URL=https://goal-amply-skinhead.ngrok-free.dev
@@ -36,5 +41,5 @@ Usamos un túnel Ngrok desde tu máquina local para exponer el endpoint de escan
 4. Fly.io muestra las cámaras activas en el modal!
 
 ## Notas importantes
-- Cada vez que reinicies Ngrok, la URL cambiará, así que tendrás que actualizar la variable de entorno en Fly.io.
-- Para una URL permanente, considera usar un dominio personalizado de Ngrok.
+- Tu PC debe permanecer encendida para que funcione el sistema
+- Para una URL permanente, usas tu dominio personalizado de Ngrok
