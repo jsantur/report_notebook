@@ -19,8 +19,12 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-// Ruta temporal de prueba HikCentral (sin autenticación)
+// Rutas públicas (sin autenticación)
+// Ruta temporal de prueba HikCentral
 Route::get('/api/test-hikcentral', [HikvisionCameraController::class, 'getDashboardStats']);
+
+// API HikCentral - Estado de Cámaras (PÚBLICA para ngrok/Fly.io)
+Route::get('/api/hikcentral/status', [HikvisionCameraController::class, 'getStatus'])->name('api.hikcentral.status');
 
 // Rutas de autenticación
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -132,8 +136,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/server-time', function () {
         return response()->json(['timestamp' => now()->timestamp, 'datetime' => now()->toISOString()]);
     })->name('api.server-time');
-
-    // API HikCentral - Estado de Cámaras
-    Route::get('/api/hikcentral/status', [HikvisionCameraController::class, 'getStatus'])->name('api.hikcentral.status');
 
 });
