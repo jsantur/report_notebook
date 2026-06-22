@@ -1,59 +1,103 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <a href="https://report-notebook-young-stone-9766.fly.dev/login">
+    <img src="./public/img/jsantur-report_notebook.webp" alt="Sistema de Control de Unidades Vehiculares" width="80%">
+  </a>
 </p>
 
-## About Laravel
+ 
+<h1 align="center">Sistema de Control de Unidades Vehiculares</h1>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  Municipalidad Provincial de Talara - Gestión de Seguridad Ciudadana
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-12.x-red" alt="Laravel">
+  <img src="https://img.shields.io/badge/PHP-8.x-blue" alt="PHP">
+  <img src="https://img.shields.io/badge/MySQL-8-orange" alt="MySQL">
+  <img src="https://img.shields.io/badge/JavaScript-ES6-yellow" alt="JavaScript">
+  <img src="https://img.shields.io/badge/Bootstrap-5-purple" alt="Bootstrap">
+  <img src="https://img.shields.io/badge/Google-Gemini_AI-green" alt="Google Gemini AI">
+  <img src="https://img.shields.io/badge/Linux-Server-black" alt="Linux">
+</p>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Acerca del Proyecto
 
-## Learning Laravel
+El Sistema de Control de Unidades Vehiculares es una plataforma desarrollada para la Municipalidad Provincial de Talara con el objetivo de optimizar la gestión operativa de Serenazgo, permitiendo el monitoreo de unidades, control de ocurrencias, administración de personal y generación de reportes en tiempo real.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+La solución integra herramientas de inteligencia artificial, validación de identidad ciudadana y mecanismos avanzados de seguridad para garantizar una gestión eficiente y confiable de la información institucional.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Funcionalidades Principales
 
-## Laravel Sponsors
+* Gestión y control de unidades vehiculares.
+* Registro y seguimiento de ocurrencias.
+* Administración de usuarios y roles.
+* Gestión de personal operativo.
+* Monitoreo de actividades en tiempo real.
+* Generación de reportes estadísticos.
+* Integración con API RENIEC.
+* Automatización de procesos mediante Google Gemini AI.
+* Sistema de respaldos automáticos (Backups).
+* Seguridad y auditoría de accesos.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Desarrollo
 
-### Premium Partners
+### Full Stack Developer @ MPT - Talara
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+**Municipalidad Provincial de Talara**  
+**Abril 2026 — Presente**
 
-## Contributing
+Responsable del diseño, desarrollo, implementación y mantenimiento del Sistema de Control de Unidades Vehiculares para la flota de Serenazgo.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### Principales aportes
 
-## Code of Conduct
+* Diseñé y desarrollé el sistema utilizando Laravel (PHP), MySQL, JavaScript y Bootstrap.
+* Implementé funcionalidades basadas en Google Gemini AI para la generación asistida de reportes, análisis de incidencias y automatización de procesos administrativos.
+* Integré la API de RENIEC para la validación y consulta de información ciudadana.
+* Desarrollé módulos para control de ocurrencias, administración de usuarios, gestión de personal, monitoreo vehicular y reportes estadísticos.
+* Implementé mecanismos de respaldo automático, recuperación de información y controles de seguridad.
+* Optimicé consultas y procesos internos mejorando significativamente los tiempos de respuesta.
+* Gestioné despliegues, mantenimiento y actualización continua en entornos de producción.
+* Participé en el levantamiento de requerimientos y mejora continua de procesos institucionales.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Tecnologías Utilizadas
 
-## Security Vulnerabilities
+### Backend
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+* Laravel
+* PHP
+* MySQL
 
-## License
+### Frontend
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+* JavaScript
+* Bootstrap
+* HTML5
+* CSS3
+
+### Integraciones
+
+* Google Gemini AI
+* API RENIEC
+
+### DevOps y Herramientas
+
+* Git
+* Linux
+* Backups Automatizados
+
+## Beneficios del Sistema
+
+* Optimización de la gestión operativa de Serenazgo.
+* Reducción de tiempos en la elaboración de reportes.
+* Automatización de procesos administrativos.
+* Mayor control y trazabilidad de incidencias.
+* Seguridad e integridad de la información institucional.
+* Mejor toma de decisiones basada en datos.
+
+## Licencia
+
+Software desarrollado para la Municipalidad Provincial de Talara.
+
+© 2026 Municipalidad Provincial de Talara - Gestión de Seguridad Ciudadana.  
+Todos los derechos reservados.
