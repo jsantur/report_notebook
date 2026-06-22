@@ -1,7 +1,7 @@
 # Skills de Desarrollo Asistido — Report Notebook (JSANTUR)
 **Versión:** 2.0 (robustecida)  
 **Mantenido por:** Antigravity AI + equipo de desarrollo  
-**Última validación:** 2026-05-19  
+**Última validación:** 2026-06-21  
 
 ## Propósito del documento
 Guiar a la IA para que realice **modificaciones seguras** en el sistema de reportes de serenazgo, evitando regresiones en:
@@ -549,14 +549,33 @@ Durante la actualización y pulido del manual y la interfaz se consolidaron las 
 3. **Ver en el modal**: Abrir el modal "Gestión de Cámaras" dentro de "Nuevo Reporte" — se cargarán automáticamente los datos. Si hiciste cambios en el CSV, haz clic en "Refrescar".
 4. **Depurar**: Abre la consola del navegador (F12) para ver logs detallados de la carga.
 
-### 12.6 Archivos Modificados/Creados
+### 12.6 Túnel Ngrok para Escaneo en Producción (Fly.io)
+- **Problema**: La aplicación en Fly.io no puede acceder directamente a la red local para escanear las cámaras.
+- **Solución**: Usar un túnel Ngrok desde una máquina local que tenga acceso a la red de cámaras.
+- **Implementación**:
+  - **Controlador**: `app/Http/Controllers/HikvisionCameraController.php` → Actualizado para usar la variable de entorno `NGROK_URL` para conectarse al túnel local.
+  - **Variable de Entorno**: `NGROK_URL` añadida a `.env.example` y configurada en Fly.io.
+  - **URL Personalizada**: Se utiliza la URL personalizada `goal-amply-skinhead.ngrok-free.dev` para evitar cambios frecuentes.
+  - **Scripts de Automatización**:
+    - `iniciar_servicios.vbs`: Script de Windows para ejecutar `php artisan serve` y Ngrok en segundo plano (sin ventanas visibles).
+    - `iniciar_servicios.bat`: Script para ejecutar manualmente los servicios.
+  - **Autoinicio con Windows**: Se puede agregar un acceso directo a `iniciar_servicios.vbs` en la carpeta de inicio de Windows (`shell:startup`).
+- **Uso**:
+  1. En la máquina local: Ejecutar `iniciar_servicios.bat` (o configurar autoinicio).
+  2. En Fly.io: La aplicación llamará automáticamente al túnel Ngrok cuando se haga clic en "Refrescar" en el modal de gestión de cámaras.
+
+### 12.7 Archivos Modificados/Creados
 - Creado: `storage/app/cameras.csv` (archivo de datos maestro con la lista final de 38 ubicaciones).
 - Creado: `app/Console/Commands/TestLocalCameras.php` (comando detallado para terminal).
-- Modificado: `app/Http/Controllers/HikvisionCameraController.php` (lógica de filtrado y preservación de orden del CSV).
+- Modificado: `app/Http/Controllers/HikvisionCameraController.php` (lógica de filtrado y preservación de orden del CSV; soporte para túnel Ngrok via variable de entorno `NGROK_URL`).
 - Modificado: `resources/views/components/modal-gestion-camaras.blade.php` (integración completa con limpieza).
 - Modificado: `resources/views/reportes/partials/scripts-nuevo.blade.php` (integración en el store Alpine principal).
 - Modificado: `resources/views/layouts/partials/sidebar.blade.php` (opción "Cámaras" comentada y ocultada).
 - Modificado: `routes/web.php` (ruta actualizada para usar `getStatus()`).
 - Mantenido: `app/Console/Commands/TestHikvisionConnection.php` (para compatibilidad).
+- Creado: `iniciar_servicios.vbs` (script para iniciar servicios en segundo plano).
+- Creado: `iniciar_servicios.bat` (script para ejecutar manualmente los servicios).
+- Creado: `NGROK_SETUP.md` (guía detallada de configuración del túnel Ngrok).
+- Modificado: `.env.example` (añadida variable `NGROK_URL`).
 
 **Fin del Skills Robustecido**
