@@ -566,9 +566,9 @@ Durante la actualización y pulido del manual y la interfaz se consolidaron las 
   2. En Fly.io: La aplicación llamará automáticamente al túnel Ngrok cuando se haga clic en "Refrescar" en el modal de gestión de cámaras.
 
 ### 12.7 Archivos Modificados/Creados
-- Creado: `storage/app/cameras.csv` (archivo de datos maestro con la lista final de 38 ubicaciones).
-- Creado: `app/Console/Commands/TestLocalCameras.php` (comando detallado para terminal).
-- Modificado: `app/Http/Controllers/HikvisionCameraController.php` (lógica de filtrado y preservación de orden del CSV; soporte para túnel Ngrok via variable de entorno `NGROK_URL`).
+- Creado: `storage/app/cameras.csv` (archivo de datos maestro con la lista final de 38 ubicaciones, con columna Estado).
+- Creado: `app/Console/Commands/TestLocalCameras.php` (comando detallado para terminal, actualiza el estado en el CSV).
+- Modificado: `app/Http/Controllers/HikvisionCameraController.php` (lógica de filtrado y preservación de orden del CSV; soporte para túnel Ngrok via variable de entorno `NGROK_URL`; actualiza el estado en el CSV).
 - Modificado: `resources/views/components/modal-gestion-camaras.blade.php` (integración completa con limpieza).
 - Modificado: `resources/views/reportes/partials/scripts-nuevo.blade.php` (integración en el store Alpine principal).
 - Modificado: `resources/views/layouts/partials/sidebar.blade.php` (opción "Cámaras" comentada y ocultada).
@@ -578,5 +578,38 @@ Durante la actualización y pulido del manual y la interfaz se consolidaron las 
 - Creado: `iniciar_servicios.bat` (script para ejecutar manualmente los servicios).
 - Creado: `NGROK_SETUP.md` (guía detallada de configuración del túnel Ngrok).
 - Modificado: `.env.example` (añadida variable `NGROK_URL`).
+
+---
+
+## 13. Migración a InfinityFree (Hosting Compartido)
+
+### 13.1 Contexto
+Debido a costos en Fly.io, se migra el proyecto a InfinityFree, un hosting compartido gratuito con soporte para PHP y MySQL.
+
+### 13.2 Componentes y Archivos
+- **Guía de Migración**: `INFINITYFREE_MIGRACION.md` → Pasos detallados para migrar el proyecto a InfinityFree.
+- **Plantilla de Configuración**: `.env.infinityfree` → Plantilla de variables de entorno para InfinityFree (configuración de MySQL, APP_URL, claves API, etc.).
+- **Archivo .htaccess para htdocs**: `.htaccess-htdocs` → Archivo para configurar URL limpias en el directorio público de InfinityFree.
+- **Index para Raíz**: `index.php-htdocs-root` → Archivo index.php para poner en la raíz de htdocs (si se desea poner todo el proyecto en htdocs).
+
+### 13.3 Pasos de Migración
+1. **Configurar Base de Datos**: Crear una base de datos MySQL en InfinityFree y copiar las credenciales.
+2. **Preparar Archivos**:
+   - Opcion A (Recomendado):
+     - Carpeta `laravel/`: Contiene todo el proyecto excepto `public/`.
+     - Carpeta `htdocs/`: Contiene el contenido de la carpeta `public/`.
+   - Opcion B (Más Simple): Poner todo el proyecto en `htdocs/`.
+3. **Subir Archivos**: Usar el File Manager de InfinityFree o FTP para subir los archivos.
+4. **Configurar .env**: Copiar la plantilla `.env.infinityfree`, editar las credenciales de MySQL y claves API, generar una APP_KEY nueva.
+5. **Configurar Permisos**: Establecer permisos 775 para `storage/` y `bootstrap/cache/`.
+6. **Ejecutar Migraciones**: Exportar la base de datos SQLite a MySQL y ejecutar las migraciones y seeders.
+7. **Configurar Ngrok**: Mantener el túnel Ngrok corriendo en la máquina local para que la aplicación en InfinityFree pueda escanear las cámaras.
+
+### 13.4 Archivos Modificados/Creados (Migración)
+- Creado: `INFINITYFREE_MIGRACION.md` (guía detallada de migración).
+- Creado: `.env.infinityfree` (plantilla de configuración para InfinityFree).
+- Creado: `.htaccess-htdocs` (archivo para htdocs de InfinityFree).
+- Creado: `index.php-htdocs-root` (index.php para raíz de htdocs).
+- Actualizado: `storage/app/cameras.csv` (columna Estado añadida y actualizada).
 
 **Fin del Skills Robustecido**
