@@ -1,5 +1,12 @@
 # Guía de Migración a InfinityFree (notebookmarte.page.gd)
 
+## Credenciales de tu cuenta:
+- **Dominio**: notebookmarte.page.gd
+- **Servidor FTP**: ftpupload.net
+- **Usuario FTP**: if0_41852788
+- **Contraseña FTP**: Tu contraseña de InfinityFree
+- **Puerto FTP**: 21
+
 ## Requisitos previos:
 - Cuenta activa en InfinityFree (notebookmarte.page.gd)
 - Acceso a File Manager y MySQL Databases en InfinityFree
@@ -38,24 +45,53 @@
 3. Sube el contenido de la carpeta `public/` a `htdocs/`
 4. Renombra `/.htaccess-htdocs` a `htdocs/.htaccess`
 
-### Opcion B: Usar FTP (recomendado para archivos grandes)
-- Usa FileZilla o WinSCP
-- Credenciales FTP están en el panel de InfinityFree
+### Opcion B: Usar SmartFTP (recomendado para archivos grandes)
+- **PASOS PARA SMARTFTP:
+1. Abre SmartFTP y crea una nueva conexión:
+   - Host (Servidor): `ftpupload.net`
+   - Port: 21
+   - Usuario: `if0_41852788`
+   - Contraseña: Tu contraseña de InfinityFree
+2. Haz clic en Conectar
+3. En el panel izquierdo (local): Abre tu carpeta `c:\laragon\www\report_notebook`
+4. En el panel derecho (remoto): Abre la carpeta `htdocs/`
+5. **OPCIÓN B (SUPER SIMPLE): Copia TODO el contenido de `c:\laragon\www\report_notebook` a `htdocs/` (todos los archivos y carpetas)
+6. Copia `index.php-htdocs-root` a `htdocs/index.php` (sobrescribe el existente)
+7. Copia `.htaccess-htdocs` a `htdocs/.htaccess`
+8. Copia tu archivo `.env` local (ajusta las credenciales para MySQL primero!) a `htdocs/.env`
 
 ## Paso 4: Configurar el archivo .env
 
+Si usas la Opción A (carpeta laravel/ separada):
 1. Copia el archivo `/.env.infinityfree` a `laravel/.env`
 2. Edita `laravel/.env` con tus credenciales MySQL de InfinityFree y tus claves API
-3. Genera una nueva APP_KEY para producción:
+
+Si usas la Opción B (todo en htdocs/):
+1. Copia el archivo `/.env.infinityfree` a `htdocs/.env`
+2. Edita `htdocs/.env` con tus credenciales MySQL de InfinityFree y tus claves API
+
+Para cualquier opción:
+3. Genera una nueva APP_KEY para producción (Haz esto LOCALMENTE en tu terminal):
    ```bash
    php artisan key:generate  # Haz esto LOCALMENTE y luego copia la APP_KEY al .env en InfinityFree
    ```
 4. Asegúrate de que APP_ENV=production y APP_DEBUG=false
+5. Asegúrate de que NGROK_URL esté configurada a https://goal-amply-skinhead.ngrok-free.dev
 
 ## Paso 5: Configurar permisos (IMPORTANTE)
-En el File Manager de InfinityFree, establece estos permisos:
+Si usas la Opción A (carpeta laravel/ separada):
 - `laravel/storage/` y subcarpetas: 775
 - `laravel/bootstrap/cache/`: 775
+
+Si usas la Opción B (todo en htdocs/):
+- `htdocs/storage/` y subcarpetas: 775
+- `htdocs/bootstrap/cache/`: 775
+
+**Cómo establecer permisos en SmartFTP**:
+1. Haz clic derecho en la carpeta (ej: htdocs/storage/)
+2. Selecciona **Properties** o **Permisos**
+3. Establece los permisos numéricos a 755 o 775
+4. Asegúrate de aplicar los cambios a todas las subcarpetas y archivos
 
 ## Paso 6: Ejecutar migraciones y seeders
 Si tienes SSH (no es común en InfinityFree), pero si no:
