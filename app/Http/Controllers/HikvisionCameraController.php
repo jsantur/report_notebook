@@ -52,8 +52,10 @@ class HikvisionCameraController extends Controller
             return response()->json(['error' => 'Archivo de cámaras no encontrado.'], 404);
         }
 
+        // Leer todas las filas del CSV
+        $csvData = [];
         $file = fopen($filePath, 'r');
-        fgetcsv($file); // Omitir la cabecera del CSV
+        $csvData[] = fgetcsv($file); // Cabecera
 
         $activeCameras = [];
         $totalAnalizados = 0;
@@ -75,13 +77,17 @@ class HikvisionCameraController extends Controller
             $esOmitido = (stripos($alias, 'LPR') !== false) || (stripos($alias, 'Control de Acceso') !== false);
             if ($esOmitido) {
                 $totalOmitidos++;
+                // Agregar la fila con el estado OFFLINE (o mantener el estado existente)
+                $csvData[] = array_merge([$alias, $ip, $port], isset($row[3]) ? [$row[3]] : ['OFFLINE']);
                 continue;
             }
 
             // Chequeamos el socket para ver si está activa
             $socket = @fsockopen($ip, $port, $errno, $errstr, 1.0);
+            $estado = 'OFFLINE';
             if ($socket) {
                 fclose($socket);
+                $estado = 'ONLINE';
                 $activeCameras[] = [
                     'nombre' => $alias,
                     'ip' => $ip,
@@ -89,6 +95,16 @@ class HikvisionCameraController extends Controller
                     'estado' => 'ONLINE'
                 ];
             }
+
+            // Agregar la fila con el estado actualizado
+            $csvData[] = [$alias, $ip, $port, $estado];
+        }
+        fclose($file);
+
+        // Escribir el CSV actualizado
+        $file = fopen($filePath, 'w');
+        foreach ($csvData as $dataRow) {
+            fputcsv($file, $dataRow);
         }
         fclose($file);
 
@@ -135,11 +151,14 @@ class HikvisionCameraController extends Controller
                 continue;
             }
 
+            // Si el CSV ya tiene estado, lo usamos; si no, usamos ONLINE por defecto
+            $estado = isset($row[3]) ? $row[3] : 'ONLINE';
+
             $todasLasCamaras[] = [
                 'nombre' => $alias,
                 'ip' => $ip,
                 'puerto' => $port,
-                'estado' => 'ONLINE'
+                'estado' => $estado
             ];
         }
         fclose($file);

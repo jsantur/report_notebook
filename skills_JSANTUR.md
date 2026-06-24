@@ -476,7 +476,7 @@ Durante la actualización y pulido del manual y la interfaz se consolidaron las 
 ## 12. Gestión de Ubicaciones y Cámaras (CSV como Fuente Única de Verdad)
 
 ### 12.1 Flujo Operativo
-- **Origen de Datos Único**: Archivo físico `storage/app/cameras.csv`. Este CSV define **exactamente** el nombre de cada ubicación, su IP, puerto, y el **ORDEN en el que deben aparecer** en el sistema.
+- **Origen de Datos Único**: Archivo físico `storage/app/cameras.csv`. Este CSV define **exactamente** el nombre de cada ubicación, su IP, puerto, estado y el **ORDEN en el que deben aparecer** en el sistema.
 - **Mecanismo de Verificación**: Conexiones directas por Sockets TCP (`fsockopen`) al puerto de datos de cada dispositivo en la red local.
 - **Reglas de Negocio Obligatorias (Filtros)**:
   - [INMUTABLE] **Solo se muestran dispositivos ONLINE**: Dispositivos que no responden al escaneo (OFFLINE) se ELIMINAN automáticamente del listado.
@@ -484,14 +484,15 @@ Durante la actualización y pulido del manual y la interfaz se consolidaron las 
   - [INMUTABLE] **Orden EXACTO del CSV**: El sistema **NO ORDENA ALFABÉTICAMENTE**, sino que mantiene el orden exacto en que aparecen las ubicaciones en el archivo `cameras.csv`. Esto garantiza que la lista siempre coincida con la estructura real de la ciudad.
   - [INMUTABLE] **Actualización limpia**: Cada vez que se abre el modal o se hace clic en "Refrescar", se LIMPIA COMPLETAMENTE la lista anterior antes de cargar las nuevas ubicaciones activas.
   - **Regla de Sanitización de Datos [INMUTABLE]**: Siempre se debe aplicar `array_values()` al array de ubicaciones antes de emitir la respuesta JSON, para asegurar un array secuencial y evitar que el navegador reordene los elementos automáticamente.
+  - **Actualización del estado en CSV**: Cada vez que se escanea las cámaras (via API o comando CLI), el archivo `cameras.csv` se actualiza automáticamente con el estado (ONLINE/OFFLINE) de cada dispositivo.
 
 ### 12.2 Componentes
 - **Controlador**: `app/Http/Controllers/HikvisionCameraController.php` -> Método `getStatus()`:
-  - Lee el CSV, aplica filtros (LPR/Control de Acceso y ON/OFF), y devuelve solo ubicaciones ONLINE **en el mismo orden que el CSV**.
+  - Lee el CSV, aplica filtros (LPR/Control de Acceso y ON/OFF), actualiza el estado en el CSV y devuelve solo ubicaciones ONLINE **en el mismo orden que el CSV**.
 - **Comando CLI**: `app/Console/Commands/TestLocalCameras.php` -> `php artisan camaras:escanear`:
-  - Escanea y muestra un reporte DETALLADO en la terminal (excluidas, inactivas, activas) **en el mismo orden que el CSV**.
+  - Escanea y muestra un reporte DETALLADO en la terminal (excluidas, inactivas, activas) **en el mismo orden que el CSV** y actualiza el estado en el archivo CSV.
 - **Ruta**: `GET /api/hikcentral/status` (Retorna payload estructurado en JSON).
-- **Archivo de Datos Maestro**: `storage/app/camaras.csv` con formato: `Alias,IP,Puerto`. Este es el único lugar donde se deben editar nombres, IPs y el orden de las ubicaciones.
+- **Archivo de Datos Maestro**: `storage/app/cameras.csv` con formato: `Alias,IP,Puerto,Estado`. Este es el único lugar donde se deben editar nombres, IPs y el orden de las ubicaciones. El campo `Estado` se actualiza automáticamente cada vez que se escanea las cámaras.
 - **Modal**: `resources/views/components/modal-gestion-camaras.blade.php`:
   - Muestra solo ubicaciones ONLINE, con botón de refrescar y debugging en consola.
 - **Menú Lateral**: La opción "Cámaras" se ha **comentado y ocultado** en `resources/views/layouts/partials/sidebar.blade.php`, ya que la gestión se hace exclusivamente a través del CSV y el modal dentro de "Nuevo Reporte".

@@ -22,8 +22,10 @@ class TestLocalCameras extends Command
             return 1;
         }
 
+        // Leer todas las filas
+        $csvData = [];
         $file = fopen($csvPath, 'r');
-        fgetcsv($file); // Omitir cabecera
+        $csvData[] = fgetcsv($file); // Cabecera
 
         $camaras = [];
         $excluidas = [];
@@ -51,12 +53,15 @@ class TestLocalCameras extends Command
                     'puerto' => $puerto,
                     'motivo' => 'Contiene LPR o Control de Acceso en el nombre'
                 ];
+                // Agregar la fila con estado OFFLINE (o mantener el existente)
+                $csvData[] = array_merge([$nombre, $ip, $puerto], isset($row[3]) ? [$row[3]] : ['OFFLINE']);
                 continue;
             }
 
             // Ahora chequeamos conexión por socket
             $socket = @fsockopen($ip, $puerto, $errno, $errstr, 1.0);
             $estaOnline = ($socket !== false);
+            $estado = $estaOnline ? 'ONLINE' : 'OFFLINE';
             
             if ($socket) {
                 fclose($socket);
@@ -69,6 +74,8 @@ class TestLocalCameras extends Command
                     'puerto' => $puerto,
                     'motivo' => 'No responde al escaneo (OFFLINE)'
                 ];
+                // Agregar la fila con estado OFFLINE
+                $csvData[] = [$nombre, $ip, $puerto, $estado];
                 continue;
             }
 
@@ -79,8 +86,17 @@ class TestLocalCameras extends Command
                 'puerto' => $puerto,
                 'online' => true
             ];
+            // Agregar la fila con estado ONLINE
+            $csvData[] = [$nombre, $ip, $puerto, $estado];
         }
         
+        fclose($file);
+
+        // Escribir el CSV actualizado
+        $file = fopen($csvPath, 'w');
+        foreach ($csvData as $dataRow) {
+            fputcsv($file, $dataRow);
+        }
         fclose($file);
 
         // NO ORDENAMOS ALFABÉTICAMENTE - MANTENEMOS EL ORDEN DEL CSV
