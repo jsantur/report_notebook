@@ -35,7 +35,7 @@ class TestGeminiCommand extends Command
         $this->info('🌐 Testing API connection...');
         
         $testText = "se visualiza a un sujeto orinando en la via publica";
-        $modelName = 'gemini-flash-latest';
+        $modelName = 'gemini-2.5-flash';
         $url = "https://generativelanguage.googleapis.com/v1beta/models/{$modelName}:generateContent";
 
         $systemPrompt = "Actúa como un oficial de guardia experto en redacción de reportes de seguridad ciudadana. Corrige el texto a lenguaje técnico y formal. REGLA: Devuelve ÚNICAMENTE el texto corregido, sin explicaciones.";

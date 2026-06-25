@@ -25,7 +25,7 @@ class AIController extends Controller
         }
 
         try {
-            $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent";
+            $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
                 'X-goog-api-key' => $apiKey,
@@ -86,7 +86,7 @@ REGLA ESTRICTA: Devuelve ÚNICAMENTE el texto corregido. Sin explicaciones, salu
             $prompt = $systemPrompt . "\n\nTexto a corregir: " . $original;
 
             // Usando v1beta como en el ejemplo del usuario
-            $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent";
+            $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
             
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
