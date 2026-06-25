@@ -1,8 +1,8 @@
 # fly.toml – Configuración de despliegue para Fly.io
-# App: report-notebook-young-stone-9766
+# App: report-notebook-jsantur
 # Region: gru (São Paulo)
 
-app = 'report-notebook-young-stone-9766'
+app = 'report-notebook-jsantur'
 primary_region = 'gru'
 console_command = 'php /var/www/html/artisan tinker'
 
@@ -14,7 +14,7 @@ console_command = 'php /var/www/html/artisan tinker'
 [env]
   APP_ENV = 'production'
   APP_DEBUG = 'false'
-  APP_URL = 'https://report-notebook-young-stone-9766.fly.dev'
+  APP_URL = 'https://report-notebook-jsantur.fly.dev'
   LOG_CHANNEL = 'stderr'
   LOG_LEVEL = 'info'
   LOG_STDERR_FORMATTER = 'Monolog\Formatter\JsonFormatter'
