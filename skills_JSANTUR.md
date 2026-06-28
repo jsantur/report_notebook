@@ -612,4 +612,61 @@ Debido a costos en Fly.io, se migra el proyecto a InfinityFree, un hosting compa
 - Creado: `index.php-htdocs-root` (index.php para raíz de htdocs).
 - Actualizado: `storage/app/cameras.csv` (columna Estado añadida y actualizada).
 
+---
+
+## 14. Actualización: Mejoras en la Gestión de Cámaras (2026-06-28)
+
+### 14.1 Problemas Solucionados
+1. **Desajuste entre local y producción**: Fly.io mostraba todas las cámaras como ONLINE (80) en lugar de usar el estado real del CSV.
+2. **Falta de herramienta para importar listas de Hikcentral**: No había un comando fácil para actualizar la lista de cámaras desde un CSV exportado.
+3. **Sincronización obsoleta**: El comando `camaras:sincronizar-fly` intentaba usar un archivo de estado intermedio que ya no existía.
+
+### 14.2 Soluciones Implementadas
+
+#### 14.2.1 Nuevo Comando: `camaras:importar`
+- **Archivo**: `app/Console/Commands/ImportarCamarasHikcentral.php`
+- **Uso**: `php artisan camaras:importar ruta/al/archivo.csv`
+- **Funcionalidad**:
+  - Importa un CSV exportado desde Hikcentral.
+  - Limpia datos (remueve tabulaciones).
+  - Establece estado inicial como ONLINE para todas.
+  - Guarda en `storage/app/cameras.csv`.
+
+#### 14.2.2 Comando `camaras:sincronizar-fly` Mejorado
+- **Archivo**: `app/Console/Commands/SincronizarCamarasFly.php`
+- **Funcionalidad Nueva**:
+  1. Escanea localmente y actualiza el CSV con el estado real.
+  2. Sube el CSV COMPLETO a Fly.io (no solo un estado intermedio).
+- **Uso**: `php artisan camaras:sincronizar-fly`
+
+#### 14.2.3 Controlador `HikvisionCameraController` Mejorado
+- **Archivo**: `app/Http/Controllers/HikvisionCameraController.php`
+- **Nuevo Método**: `readFromCsv()`
+  - Lee el estado que ya está en el CSV (no todas como ONLINE).
+  - Responde con el mismo formato que `checkCamerasLocally()`.
+- **Lógica Mejorada en `getStatus()`**:
+  1. Si es LOCAL: escanea y actualiza CSV.
+  2. Si es PRODUCCIÓN:
+     - Primero intenta conectarse a Ngrok para estado en tiempo real.
+     - Si Ngrok falla: usa el estado del CSV sincronizado.
+
+#### 14.2.4 Lista de Cámaras Actualizada
+- **Archivo**: `storage/app/cameras.csv`
+- **Total**: 82 cámaras (incluyendo Fonavi, Malecón San Pedro, etc.).
+- **Excluidas**: LPR y Control de Acceso.
+
+### 14.3 Flujo de Trabajo Final
+1. **Local**: Actualizar CSV (editar manualmente o importar con `camaras:importar`).
+2. **Local**: Escanear y actualizar estado (se hace automáticamente al sincronizar).
+3. **Sincronizar**: `php artisan camaras:sincronizar-fly` (sube CSV a Fly.io).
+4. **Producción**: Fly.io usa el estado del CSV, o Ngrok si está disponible.
+
+### 14.4 Archivos Modificados/Creados
+- Creado: `app/Console/Commands/ImportarCamarasHikcentral.php`
+- Modificado: `app/Console/Commands/SincronizarCamarasFly.php`
+- Modificado: `app/Http/Controllers/HikvisionCameraController.php`
+- Actualizado: `storage/app/cameras.csv` (82 cámaras completas)
+- Modificado: `.gitignore` (excluye `actualizar_estado_camaras.php`)
+- Actualizado: `iniciar_servicios.vbs` (mejorado para estabilidad)
+
 **Fin del Skills Robustecido**

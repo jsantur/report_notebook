@@ -23,25 +23,86 @@ class HikvisionCameraController extends Controller
             return $this->checkCamerasLocally();
         }
 
-        // Si es PRODUCCIÓN (Fly.io): Llamamos a la máquina LOCAL via ngrok
-        try {
-            // Si no tienes configurada la URL de ngrok, usa el fallback
-            if (empty($this->ngrokUrl)) {
-                return $this->fallbackToAllCameras();
-            }
-
-            // Hacemos una petición a tu endpoint LOCAL via ngrok
-            $response = Http::timeout(10)->get($this->ngrokUrl . '/api/hikcentral/status');
-            
-            if ($response->successful()) {
-                return response()->json($response->json());
-            } else {
-                return $this->fallbackToAllCameras();
-            }
-        } catch (\Exception $e) {
-            // Si hay error (ngrok apagado, etc.), devolvemos todas las cámaras como activas
+        // Si es PRODUCCIÓN (Fly.io): Primero leemos el CSV sincronizado
+        // Si podemos conectarnos a Ngrok, actualizamos; si no, usamos el CSV existente
+        $filePath = storage_path('app/cameras.csv');
+        
+        if (!file_exists($filePath)) {
             return $this->fallbackToAllCameras();
         }
+
+        // Primero, intentamos actualizar via Ngrok
+        try {
+            if (!empty($this->ngrokUrl)) {
+                $response = Http::timeout(10)->get($this->ngrokUrl . '/api/hikcentral/status');
+                
+                if ($response->successful()) {
+                    return response()->json($response->json());
+                }
+            }
+        } catch (\Exception $e) {
+            // Si falla Ngrok, continuamos y usamos el CSV sincronizado
+        }
+
+        // Si llegamos aquí, usamos el estado que ya está en el CSV (no todas como ONLINE)
+        return $this->readFromCsv();
+    }
+
+    private function readFromCsv()
+    {
+        $filePath = storage_path('app/cameras.csv');
+
+        if (!file_exists($filePath)) {
+            return response()->json(['error' => 'Archivo de cámaras no encontrado.'], 404);
+        }
+
+        $file = fopen($filePath, 'r');
+        fgetcsv($file); // Omitir la cabecera del CSV
+
+        $camaras = [];
+        $totalAnalizados = 0;
+        $totalOmitidos = 0;
+        $activos = 0;
+
+        while (($row = fgetcsv($file, 1000, ",")) !== FALSE) {
+            if (empty($row) || count($row) < 3) continue;
+
+            $alias = trim(str_replace("\t", "", $row[0]));
+            $ip = trim(str_replace("\t", "", $row[1]));
+            $port = intval(trim(str_replace("\t", "", $row[2])));
+            $estado = isset($row[3]) ? trim($row[3]) : 'OFFLINE';
+
+            if (empty($ip) || $ip === 'Device Address') continue;
+
+            $totalAnalizados++;
+
+            $esOmitido = (stripos($alias, 'LPR') !== false) || (stripos($alias, 'Control de Acceso') !== false);
+            if ($esOmitido) {
+                $totalOmitidos++;
+                continue;
+            }
+
+            if ($estado === 'ONLINE') {
+                $activos++;
+                $camaras[] = [
+                    'nombre' => $alias,
+                    'ip' => $ip,
+                    'puerto' => $port,
+                    'estado' => 'ONLINE'
+                ];
+            }
+        }
+        fclose($file);
+
+        return response()->json([
+            'resumen' => [
+                'total_csv' => $totalAnalizados,
+                'omitidos' => $totalOmitidos,
+                'activos_validos' => $activos,
+                'inactivos' => ($totalAnalizados - $totalOmitidos - $activos)
+            ],
+            'cameras' => $camaras
+        ]);
     }
 
     private function checkCamerasLocally()
