@@ -23,28 +23,15 @@ class HikvisionCameraController extends Controller
             return $this->checkCamerasLocally();
         }
 
-        // Si es PRODUCCIÓN (Fly.io): Primero leemos el CSV sincronizado
-        // Si podemos conectarnos a Ngrok, actualizamos; si no, usamos el CSV existente
+        // Si es PRODUCCIÓN (Fly.io): SIEMPRE usamos el CSV sincronizado primero
+        // Esto garantiza que se vea el mismo estado que en local
         $filePath = storage_path('app/cameras.csv');
         
         if (!file_exists($filePath)) {
             return $this->fallbackToAllCameras();
         }
 
-        // Primero, intentamos actualizar via Ngrok
-        try {
-            if (!empty($this->ngrokUrl)) {
-                $response = Http::timeout(10)->get($this->ngrokUrl . '/api/hikcentral/status');
-                
-                if ($response->successful()) {
-                    return response()->json($response->json());
-                }
-            }
-        } catch (\Exception $e) {
-            // Si falla Ngrok, continuamos y usamos el CSV sincronizado
-        }
-
-        // Si llegamos aquí, usamos el estado que ya está en el CSV (no todas como ONLINE)
+        // Leemos el CSV sincronizado (fuente de verdad)
         return $this->readFromCsv();
     }
 

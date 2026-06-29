@@ -647,8 +647,8 @@ Debido a costos en Fly.io, se migra el proyecto a InfinityFree, un hosting compa
 - **Lógica Mejorada en `getStatus()`**:
   1. Si es LOCAL: escanea y actualiza CSV.
   2. Si es PRODUCCIÓN:
-     - Primero intenta conectarse a Ngrok para estado en tiempo real.
-     - Si Ngrok falla: usa el estado del CSV sincronizado.
+     - **SIEMPRE usa el CSV sincronizado (fuente de verdad) para garantizar que se vea el mismo estado que en local.
+     - No intenta conectarse a Ngrok para evitar desajustes.
 
 #### 14.2.4 Lista de Cámaras Actualizada
 - **Archivo**: `storage/app/cameras.csv`
