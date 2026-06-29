@@ -6,6 +6,26 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard - Seguridad Ciudadana')</title>
     
+    <!-- Meta Description -->
+    <meta name="description" content="@yield('meta_description', 'Sistema de gestión de reportes, cámaras y megáfonos para seguridad ciudadana.')">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ url()->current() }}">
+    
+    <!-- Open Graph (OG) -->
+    <meta property="og:title" content="@yield('og_title', 'Seguridad Ciudadana - Sistema de Reportes')">
+    <meta property="og:description" content="@yield('og_description', 'Sistema de gestión de reportes, cámaras y megáfonos para seguridad ciudadana.')">
+    <meta property="og:image" content="@yield('og_image', asset('img/escudo_optimizado.png'))">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_PE">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('twitter_title', 'Seguridad Ciudadana - Sistema de Reportes')">
+    <meta name="twitter:description" content="@yield('twitter_description', 'Sistema de gestión de reportes, cámaras y megáfonos para seguridad ciudadana.')">
+    <meta name="twitter:image" content="@yield('twitter_image', asset('img/escudo_optimizado.png'))">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
