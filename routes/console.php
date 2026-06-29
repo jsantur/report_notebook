@@ -14,3 +14,6 @@ Schedule::call(function () {
     ReporteDraft::where('updated_at', '<', now()->subDays(2))->delete();
     AsignacionTemp::where('updated_at', '<', now()->subDays(2))->delete();
 })->dailyAt('03:00');
+
+// Sincronización automática de cámaras cada 5 minutos
+Schedule::command('camaras:auto-sync')->everyFiveMinutes()->withoutOverlapping();

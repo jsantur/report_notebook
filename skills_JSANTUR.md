@@ -669,4 +669,65 @@ Debido a costos en Fly.io, se migra el proyecto a InfinityFree, un hosting compa
 - Modificado: `.gitignore` (excluye `actualizar_estado_camaras.php`)
 - Actualizado: `iniciar_servicios.vbs` (mejorado para estabilidad)
 
+## 15. Arquitectura Automática y Tolerante a Fallos (2026-06-29)
+### 15.1 Problemas Solucionados
+- **Sincronización Manual**: Ahora es automática cada 5 minutos.
+- **Desajustes entre Local y Fly.io**: Siempre coinciden porque el CSV se sube automáticamente.
+- **Falta de Reintentos**: Si falla la sincronización, reintenta 3 veces con espera exponencial.
+- **Falta de Monitoreo**: Se genera un log detallado en `storage/logs/camaras_auto_sync.log`.
+
+### 15.2 Componentes Nuevos
+1. **Comando `camaras:auto-sync`**:
+   - Escanea la red local y actualiza el CSV.
+   - Detecta cambios usando hashes MD5.
+   - Sube el CSV a Fly.io si hay cambios.
+   - Reintenta hasta 3 veces si falla.
+   - Loguea todo en `storage/logs/camaras_auto_sync.log`.
+
+2. **Scheduler de Laravel**:
+   - Ejecuta `camaras:auto-sync` **cada 5 minutos**.
+   - Se configura en `routes/console.php`.
+
+3. **Scripts de Windows Actualizados**:
+   - `iniciar_servicios.vbs`: Ahora también inicia el Scheduler de Laravel (`php artisan schedule:work`).
+
+### 15.3 Flujo Completo (100% Automático)
+1. **Tu PC se enciende**:
+   - `iniciar_servicios.vbs` se ejecuta automáticamente (si está en la carpeta de Inicio de Windows).
+   - Inicia `php artisan serve` (para Ngrok).
+   - Inicia Ngrok (para futuro uso).
+   - Inicia el **Scheduler de Laravel** (para sincronización automática).
+
+2. **Cada 5 minutos**:
+   - El Scheduler ejecuta `camaras:auto-sync`.
+   - Se escanea la red local y actualiza el CSV.
+   - Se compara el CSV con la última versión sincronizada (usando hash MD5).
+   - Si hay cambios:
+     - Se sube el CSV a Fly.io.
+     - Se guarda la versión sincronizada para la próxima vez.
+   - Si no hay cambios: No hace nada.
+
+3. **Si falla la sincronización**:
+   - Reintenta 3 veces con espera exponencial (5, 10, 20 segundos).
+   - Si sigue fallando: Lo registra en el log y lo intenta de nuevo en 5 minutos.
+
+4. **Fly.io**:
+   - Siempre lee el CSV sincronizado (fuente de verdad).
+   - No hay desajustes con local.
+
+### 15.4 Cómo Verificar que Funciona
+1. **Ver Logs**: Abre `storage/logs/camaras_auto_sync.log` para ver la actividad.
+2. **Probar Manualmente**: Ejecuta `php artisan camaras:auto-sync` para probar.
+3. **Verificar en Fly.io**: Abre la app y haz clic en "Refrescar" en el modal de cámaras — debe coincidir con local.
+
+### 15.5 Mantenimiento
+- **Revisar Logs**: Periódicamente revisa `storage/logs/camaras_auto_sync.log` para errores.
+- **Restart Servicios**: Si algo falla, ejecuta `iniciar_servicios.bat` para reiniciar todos los servicios.
+- **Actualizar CSV**: Si necesitas importar un CSV nuevo, usa `php artisan camaras:importar` — el scheduler se encargará de sincronizarlo.
+
+### 15.6 Archivos Modificados/Creados
+- Creado: `app/Console/Commands/CamarasAutoSync.php`
+- Modificado: `routes/console.php` (agregado schedule)
+- Modificado: `iniciar_servicios.vbs` (agregado scheduler)
+
 **Fin del Skills Robustecido**
