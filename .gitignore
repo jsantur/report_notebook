@@ -31,3 +31,7 @@ reset_*.php
 fix_*.php
 search_*.php
 actualizar_estado_camaras.php
+
+# CSV de cámaras (datos locales, no se versiona)
+storage/app/cameras.csv
+storage/app/cameras_last_sync.csv
