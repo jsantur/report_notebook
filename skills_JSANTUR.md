@@ -680,7 +680,8 @@ Debido a costos en Fly.io, se migra el proyecto a InfinityFree, un hosting compa
 1. **Comando `camaras:auto-sync`**:
    - Escanea la red local y actualiza el CSV.
    - Detecta cambios usando hashes MD5.
-   - Sube el CSV a Fly.io si hay cambios.
+   - **Borra el CSV viejo en Fly.io** para evitar errores de sobreescritura.
+   - Sube el CSV nuevo a Fly.io si hay cambios.
    - Reintenta hasta 3 veces si falla.
    - Loguea todo en `storage/logs/camaras_auto_sync.log`.
 

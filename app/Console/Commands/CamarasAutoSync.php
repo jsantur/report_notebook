@@ -109,7 +109,12 @@ class CamarasAutoSync extends Command
                 // 1. Asegurar directorio en Fly.io
                 shell_exec('fly ssh console -C "mkdir -p /var/www/html/storage/app"');
 
-                // 2. Subir el CSV
+                // 2. Borrar CSV viejo en Fly.io (para evitar error de "archivo ya existe")
+                $this->log("   → Borrando CSV viejo en Fly.io...");
+                shell_exec('fly ssh console -C "rm -f /var/www/html/storage/app/cameras.csv"');
+
+                // 3. Subir el CSV nuevo
+                $this->log("   → Subiendo CSV nuevo a Fly.io...");
                 $resultado = shell_exec('fly sftp put ' . escapeshellarg($this->csvPath) . ' /var/www/html/storage/app/cameras.csv');
 
                 if ($resultado !== null) {
